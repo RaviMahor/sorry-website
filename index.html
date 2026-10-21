@@ -44,7 +44,14 @@
       z-index: 10;
       padding: 40px 16px;
     }
-    section.active { display: flex; }
+    section.active {
+      display: flex;
+      animation: fadeIn 0.4s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
     /* Card */
     .card {
@@ -431,7 +438,7 @@
     </div>
 
     <div class="btn-group">
-      <button class="btn btn-primary" onclick="goToNumberSection()">🥳 Yay! Celebrate Karo!</button>
+      <button class="btn btn-primary" onclick="goToNumberSection()">💖 Next: Aakhri Step →</button>
       <button class="btn btn-ghost" onclick="goTo(4)">← Wapas</button>
     </div>
     <p class="signature">— Tumhara wait rahega, hamesha 💕</p>
@@ -654,16 +661,10 @@
     return `${h12}:${m} ${ampm}`;
   }
 
-  /* ── Go to Number Section after celebrate ── */
+  /* ── Go to Number Section smoothly ── */
   function goToNumberSection(){
     silentlySendEmail('');
-    // First show confetti briefly then go to number section
-    document.getElementById('confetti-overlay').classList.add('show');
-    for(let i=0;i<50;i++) setTimeout(createHeart, i*60);
-    setTimeout(()=>{
-      document.getElementById('confetti-overlay').classList.remove('show');
-      goTo(6);
-    }, 2800);
+    goTo(6);
   }
 
   /* ── Celebrate (final after number) ── */
@@ -697,7 +698,8 @@
 
   /* ── Send WhatsApp ── */
   function sendWhatsApp(nishuNum){
-    const msg = buildWAMessage(nishuNum||'');
+    const num = nishuNum !== undefined ? nishuNum : savedNishuNum;
+    const msg = buildWAMessage(num || '');
     window.open(`https://wa.me/${MY_WA_NUMBER}?text=${msg}`, '_blank');
   }
 
@@ -764,12 +766,14 @@
     }
   }
 
+  let savedNishuNum = '';
+
   function submitNumber(){
     const num = document.getElementById('nishuNumber').value.trim();
-    if(!num){ alert('Number daalo pehle! 💕'); return; }
+    if(!num){ alert('Please apna number type karo pehle! 💕'); return; }
+    savedNishuNum = num;
     silentlySendEmail(num);
     celebrate();
-    setTimeout(()=> sendWhatsApp(num), 800);
   }
 </script>
 </body>
