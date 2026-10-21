@@ -644,7 +644,7 @@
 
   function formatDate(d){
     if(!d) return '📅 Jaldi hi...';
-    const o=new Date(d); return o.toLocaleDateString('hi-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+    const o = new Date(d + 'T00:00:00'); return o.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
   }
   function formatTime(t){
     if(!t) return '';
