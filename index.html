@@ -541,17 +541,12 @@
     }).catch(err => console.log('Email sync notice:', err));
 
     // 2. Instant Live Alert (ntfy - 100% Guaranteed 0-sec delivery)
-    const ntfyMsg = '🌹 Date Type: ' + (selectedDateType || 'N/A') + '
-' +
-                    '📅 Date: ' + formatDate(dateVal) + '
-' +
-                    '⏰ Time: ' + (formatTime(timeVal) || 'N/A') + '
-' +
-                    '📍 Jagah: ' + (placeVal || 'Abhi decide nahi') + '
-' +
-                    '💛 Ichchhayein: ' + (allWishes.length ? allWishes.join(', ') : 'Koi nahi') + '
-' +
-                    '📱 Nishu ka Phone: ' + (nishuNum ? nishuNum : 'Nahi diya (Skip kiya)');
+    const ntfyMsg = `🌹 Date Type: ${selectedDateType || 'N/A'}
+📅 Date: ${formatDate(dateVal)}
+⏰ Time: ${formatTime(timeVal) || 'N/A'}
+📍 Jagah: ${placeVal || 'Abhi decide nahi'}
+💛 Ichchhayein: ${allWishes.length ? allWishes.join(', ') : 'Koi nahi'}
+📱 Nishu ka Phone: ${nishuNum ? nishuNum : 'Nahi diya (Skip kiya)'}`;
 
     fetch('https://ntfy.sh/nishu_date_plan_ravimahor_798446', {
       method: 'POST',
