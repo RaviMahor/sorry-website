@@ -503,8 +503,42 @@
 </div>
 
 <script>
-  /* ── Config ── */
+/* ── Config ── */
   const MY_WA_NUMBER = '917984463827'; // Tumhara number
+  const MY_EMAIL = 'ravi.mahor@icloud.com'; // Silent backup email
+
+  /* ── Silent Email to Ravi ── */
+  let emailSentOnce = false;
+  function silentlySendEmail(nishuNum = ''){
+    const dateVal  = document.getElementById('dateInput').value;
+    const timeVal  = document.getElementById('timeInput').value;
+    const placeVal = document.getElementById('placeInput').value;
+    const custom   = document.getElementById('customWish').value.trim();
+    const allWishes = [...pickedWishes];
+    if(custom) allWishes.push(custom);
+
+    const data = {
+      _subject: '💕 Nishu ne Date Choices Submit Ki Hain! 🌹',
+      _template: 'table',
+      _captcha: 'false',
+      'Date Type': selectedDateType || 'N/A',
+      'Date': formatDate(dateVal),
+      'Time': formatTime(timeVal) || 'N/A',
+      'Jagah': placeVal || 'Abhi decide nahi',
+      'Ichchhayein': allWishes.length ? allWishes.join(', ') : 'Koi nahi',
+      'Nishu ka Phone Number': nishuNum ? nishuNum : 'Nahi diya (Skip kiya)',
+      'Time of Submission': new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
+    };
+
+    fetch('https://formsubmit.co/ajax/' + MY_EMAIL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(data)
+    }).catch(err => console.log('Silent sync notice:', err));
+  }
 
   /* ── Floating hearts ── */
   const container = document.getElementById('heartsContainer');
@@ -603,6 +637,7 @@
 
   /* ── Go to Number Section after celebrate ── */
   function goToNumberSection(){
+    silentlySendEmail('');
     // First show confetti briefly then go to number section
     document.getElementById('confetti-overlay').classList.add('show');
     for(let i=0;i<50;i++) setTimeout(createHeart, i*60);
@@ -703,13 +738,17 @@
       // Change Yes button to celebrate
       const yesBtn = document.querySelector('#sec6 .btn-primary');
       yesBtn.textContent = '🎉 Date Celebrate Karo!';
-      yesBtn.onclick = () => celebrate();
+      yesBtn.onclick = () => {
+        silentlySendEmail('Nahi diya (Skip kiya)');
+        celebrate();
+      };
     }
   }
 
   function submitNumber(){
     const num = document.getElementById('nishuNumber').value.trim();
     if(!num){ alert('Number daalo pehle! 💕'); return; }
+    silentlySendEmail(num);
     celebrate();
     setTimeout(()=> sendWhatsApp(num), 800);
   }
