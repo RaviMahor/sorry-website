@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mujhe Maaf Kar Do & Date Chalogi? 💕</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Poppins:wght@300;400;500;600&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --pink: #ff6eb4;
+      --deep-pink: #ff2d78;
+      --purple: #a855f7;
+      --gold: #fbbf24;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1a0a2e 0%, #2d1554 40%, #6b1a5e 100%);
+      font-family: 'Poppins', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Floating hearts */
+    .hearts-bg { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+    .heart-particle {
+      position: absolute; bottom: -50px;
+      animation: floatUp linear infinite; opacity: 0.55;
+    }
+    @keyframes floatUp {
+      from { transform: translateY(0) rotate(0deg); opacity: 0.55; }
+      to   { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* ── SECTIONS ── */
+    section {
+      display: none;
+      min-height: 100vh;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 10;
+      padding: 40px 16px;
+    }
+    section.active { display: flex; }
+
+    /* Card */
+    .card {
+      background: rgba(255,255,255,0.07);
+      backdrop-filter: blur(22px);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 30px;
+      padding: 46px 38px;
+      max-width: 540px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 25px 80px rgba(0,0,0,0.5);
+      animation: cardIn 0.8s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    @keyframes cardIn {
+      from { opacity:0; transform: scale(0.82) translateY(40px); }
+      to   { opacity:1; transform: scale(1) translateY(0); }
+    }
+
+    .main-heart { font-size: 80px; display:inline-block; animation: beat 1.2s ease-in-out infinite; filter: drop-shadow(0 0 18px rgba(255,80,120,.8)); cursor:pointer; }
+    @keyframes beat { 0%,100%{transform:scale(1)} 30%{transform:scale(1.18)} 60%{transform:scale(0.94)} }
+
+    h1 { font-family:'Dancing Script',cursive; font-size:2.7rem; color:var(--pink); margin:14px 0 6px; text-shadow:0 0 20px rgba(255,110,180,.6); }
+    .subtitle { color:rgba(255,255,255,.5); font-size:.8rem; letter-spacing:2px; text-transform:uppercase; margin-bottom:26px; }
+
+    .msg-box {
+      background: rgba(255,255,255,0.05);
+      border-left: 4px solid var(--pink);
+      border-radius: 12px;
+      padding: 20px 22px;
+      margin: 18px 0;
+      text-align: left;
+    }
+    .msg-box p { color:rgba(255,255,255,.88); font-size:.97rem; line-height:1.9; }
+    .msg-box p .hi { color:#ff9ed2; font-weight:600; }
+
+    /* Buttons */
+    .btn-group { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:28px; }
+    .btn { padding:12px 26px; border-radius:50px; border:none; font-size:.97rem; font-family:'Poppins',sans-serif; cursor:pointer; font-weight:600; transition:all .3s; }
+    .btn-primary { background:linear-gradient(135deg,var(--pink),var(--deep-pink)); color:#fff; box-shadow:0 8px 25px rgba(255,45,120,.4); }
+    .btn-primary:hover { transform:translateY(-3px) scale(1.05); box-shadow:0 12px 35px rgba(255,45,120,.65); }
+    .btn-ghost { background:rgba(255,255,255,.09); color:rgba(255,255,255,.7); border:1px solid rgba(255,255,255,.2); }
+    .btn-ghost:hover { background:rgba(255,255,255,.17); transform:translateY(-2px); }
+
+    /* ── SECTION 2 – Date invite ── */
+    .date-icon { font-size:72px; animation:swing 2s ease-in-out infinite; }
+    @keyframes swing { 0%,100%{transform:rotate(-6deg)} 50%{transform:rotate(6deg)} }
+
+    /* Date options grid */
+    .date-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:22px 0; }
+    .date-option {
+      background: rgba(255,255,255,.06);
+      border: 2px solid transparent;
+      border-radius: 16px;
+      padding: 16px 12px;
+      cursor: pointer;
+      transition: all .3s;
+      color: #fff;
+      font-size: .9rem;
+    }
+    .date-option .icon { font-size: 2rem; display:block; margin-bottom:6px; }
+    .date-option:hover, .date-option.selected {
+      border-color: var(--pink);
+      background: rgba(255,110,180,.15);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(255,110,180,.25);
+    }
+    .date-option.selected::after { content:'✓'; position:absolute; top:8px; right:12px; color:var(--pink); font-weight:700; }
+    .date-option { position:relative; }
+
+    /* ── SECTION 3 – Date planner ── */
+    .timeline { text-align:left; margin:20px 0; }
+    .tl-item { display:flex; gap:14px; margin-bottom:20px; align-items:flex-start; }
+    .tl-dot { width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,var(--pink),var(--purple)); display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0; box-shadow:0 4px 14px rgba(255,110,180,.4); }
+    .tl-content h3 { color:var(--pink); font-size:.95rem; margin-bottom:3px; }
+    .tl-content p { color:rgba(255,255,255,.7); font-size:.85rem; line-height:1.6; }
+    .tl-line { width:2px; background:linear-gradient(to bottom,var(--pink),var(--purple)); height:20px; margin-left:18px; margin-top:-8px; margin-bottom:4px; }
+
+    /* ── SECTION 4 – Her wishlist ── */
+    .wish-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:20px 0; }
+    .wish-card {
+      background:rgba(255,255,255,.06);
+      border:2px solid transparent;
+      border-radius:14px;
+      padding:14px 10px;
+      cursor:pointer;
+      transition:all .3s;
+      color:#fff;
+      font-size:.85rem;
+      text-align:center;
+      user-select:none;
+    }
+    .wish-card .wi { font-size:1.8rem; display:block; margin-bottom:5px; }
+    .wish-card:hover { border-color:var(--gold); background:rgba(251,191,36,.1); transform:scale(1.04); }
+    .wish-card.picked { border-color:var(--gold); background:rgba(251,191,36,.15); }
+    .wish-card.picked::after { content:'💛'; position:absolute; top:6px; right:8px; font-size:.85rem; }
+    .wish-card { position:relative; }
+
+    .custom-wish {
+      width:100%; padding:12px 16px;
+      background:rgba(255,255,255,.07);
+      border:1px solid rgba(255,255,255,.2);
+      border-radius:12px;
+      color:#fff;
+      font-family:'Poppins',sans-serif;
+      font-size:.9rem;
+      margin-top:12px;
+      outline:none;
+      resize:none;
+      transition:border .3s;
+    }
+    .custom-wish::placeholder { color:rgba(255,255,255,.35); }
+    .custom-wish:focus { border-color:var(--pink); }
+
+    /* ── SECTION 5 – Final confirmation ── */
+    .booked-badge {
+      background:linear-gradient(135deg,var(--pink),var(--purple));
+      border-radius:20px;
+      padding:20px;
+      margin:20px 0;
+      font-size:1.05rem;
+      color:#fff;
+      line-height:1.8;
+      box-shadow:0 8px 30px rgba(168,85,247,.4);
+    }
+    .booked-badge .label { font-size:.75rem; opacity:.7; text-transform:uppercase; letter-spacing:1px; }
+    .booked-badge .value { font-weight:700; font-size:1.1rem; }
+
+    .wish-list-final { text-align:left; margin:14px 0; }
+    .wish-list-final li { color:rgba(255,255,255,.8); font-size:.9rem; margin:6px 0; list-style:none; }
+    .wish-list-final li::before { content:'💛 '; }
+
+    /* Confetti overlay */
+    #confetti-overlay {
+      display:none; position:fixed; inset:0;
+      background:rgba(20,5,40,.93); z-index:999;
+      align-items:center; justify-content:center;
+      flex-direction:column; text-align:center; padding:20px;
+    }
+    #confetti-overlay.show { display:flex; animation:fadeIn .6s ease; }
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+    .big-text { font-family:'Dancing Script',cursive; font-size:3.2rem; color:var(--pink); text-shadow:0 0 30px rgba(255,110,180,.9); margin-top:20px; }
+    .sub-text { color:rgba(255,255,255,.7); font-size:1rem; margin-top:10px; }
+    .emoji-row { font-size:2.2rem; margin-top:16px; letter-spacing:6px; }
+
+    /* Progress dots */
+    .progress { display:flex; gap:8px; justify-content:center; margin-bottom:20px; }
+    .dot { width:10px; height:10px; border-radius:50%; background:rgba(255,255,255,.2); transition:all .4s; }
+    .dot.active { background:var(--pink); box-shadow:0 0 10px var(--pink); transform:scale(1.2); }
+    .dot.done { background:rgba(255,110,180,.5); }
+
+    /* No button escape */
+    #btn-no { transition:all .2s; }
+
+    .signature { margin-top:24px; color:rgba(255,255,255,.3); font-size:.78rem; font-style:italic; }
+
+    /* date picker styled */
+    input[type="date"], input[type="time"] {
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.2);
+      border-radius:10px;
+      color:#fff;
+      font-family:'Poppins',sans-serif;
+      font-size:.9rem;
+      padding:10px 14px;
+      outline:none;
+      width:100%;
+      margin:6px 0;
+      transition:border .3s;
+    }
+    input[type="date"]:focus, input[type="time"]:focus { border-color:var(--pink); }
+    input[type="date"]::-webkit-calendar-picker-indicator,
+    input[type="time"]::-webkit-calendar-picker-indicator {
+      filter: invert(1) brightness(0.7);
+      cursor:pointer;
+    }
+    label.field-label { color:rgba(255,255,255,.55); font-size:.78rem; text-align:left; display:block; margin-top:12px; letter-spacing:1px; text-transform:uppercase; }
+
+  </style>
+</head>
+<body>
+
+<div class="hearts-bg" id="heartsContainer"></div>
+
+<!-- ═══════════════════════════════════════
+     SECTION 1 – Sorry Letter
+════════════════════════════════════════ -->
+<section id="sec1" class="active">
+  <div class="card">
+    <div class="progress">
+      <div class="dot active" id="d1"></div>
+      <div class="dot" id="d2"></div>
+      <div class="dot" id="d3"></div>
+      <div class="dot" id="d4"></div>
+      <div class="dot" id="d5"></div>
+    </div>
+
+    <div class="main-heart" id="mainHeart">💔</div>
+    <h1>Mujhe Maaf Kar Do</h1>
+    <p class="subtitle">Tumhare Bina Kuch Nahi ✨</p>
+
+    <div class="msg-box">
+      <p>
+        Mere pyaare,<br><br>
+        Main jaanta hoon maine <span class="hi">galti ki</span>, aur dil se maafi chahta hoon.
+        Tumhara dard dekhkar <span class="hi">mera dil toot jaata hai</span>.<br><br>
+        Tum mere liye <span class="hi">duniya mein sabse khaas</span> ho.
+        Bina tumhare meri zindagi adhuri lagti hai.<br><br>
+        Please mujhe ek maafi do — main vaada karta hoon,
+        aage se tumhe kabhi takleef nahi doonga. 🌹<br><br>
+        <strong>Sirf tumhara,<br>Tumhara Deewana 💕</strong>
+      </p>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="goTo(2)">💖 Maaf Kiya! Aage Bado</button>
+      <button class="btn btn-ghost" id="btn-no" onmouseover="runAway(this)">😢 Nahi</button>
+    </div>
+    <p class="signature">— Sirf tumhare liye 🌙</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     SECTION 2 – Date Invite
+════════════════════════════════════════ -->
+<section id="sec2">
+  <div class="card">
+    <div class="progress">
+      <div class="dot done" id="d1b"></div>
+      <div class="dot active" id="d2b"></div>
+      <div class="dot" id="d3b"></div>
+      <div class="dot" id="d4b"></div>
+      <div class="dot" id="d5b"></div>
+    </div>
+
+    <div class="date-icon">🌹</div>
+    <h1>Date Pe Chalogi?</h1>
+    <p class="subtitle">Ek Khaas Shaam Sirf Tumhare Liye 🌙</p>
+
+    <p style="color:rgba(255,255,255,.7); font-size:.95rem; margin:10px 0 18px;">
+      Maafi ke baad, main tumhare saath ek <strong style="color:var(--pink)">yaadgaar date</strong> plan karna chahta hoon.
+      Kya tum mere saath chalogi? 🥺
+    </p>
+
+    <p style="color:rgba(255,255,255,.55); font-size:.8rem; margin-bottom:12px; letter-spacing:1px; text-transform:uppercase;">Date ka type chuno:</p>
+    <div class="date-grid" id="dateTypeGrid">
+      <div class="date-option" onclick="selectDateType(this,'🍽️ Candlelight Dinner')"><span class="icon">🍽️</span>Candlelight Dinner</div>
+      <div class="date-option" onclick="selectDateType(this,'🎬 Movie + Popcorn')"><span class="icon">🎬</span>Movie & Popcorn</div>
+      <div class="date-option" onclick="selectDateType(this,'🌅 Sunset Walk')"><span class="icon">🌅</span>Sunset Walk</div>
+      <div class="date-option" onclick="selectDateType(this,'☕ Cozy Café Date')"><span class="icon">☕</span>Cozy Café Date</div>
+      <div class="date-option" onclick="selectDateType(this,'🎡 Amusement Park')"><span class="icon">🎡</span>Amusement Park</div>
+      <div class="date-option" onclick="selectDateType(this,'🌃 Night Drive')"><span class="icon">🌃</span>Night Drive</div>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="goTo(3)">💕 Haan! Date Book Karo</button>
+      <button class="btn btn-ghost" onclick="goTo(1)">← Wapas</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     SECTION 3 – Date Book Karo
+════════════════════════════════════════ -->
+<section id="sec3">
+  <div class="card">
+    <div class="progress">
+      <div class="dot done"></div>
+      <div class="dot done"></div>
+      <div class="dot active"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+
+    <div style="font-size:56px; margin-bottom:8px;">📅</div>
+    <h1>Date Book Karo</h1>
+    <p class="subtitle">Humari Khaas Shaam 🌙</p>
+
+    <label class="field-label">📅 Kab milna hai?</label>
+    <input type="date" id="dateInput" />
+
+    <label class="field-label">⏰ Kya waqt?</label>
+    <input type="time" id="timeInput" value="19:00" />
+
+    <label class="field-label">📍 Kahan milenge?</label>
+    <input type="text" id="placeInput" placeholder="e.g. CCD Connaught Place, Delhi"
+      style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;font-family:Poppins,sans-serif;font-size:.9rem;padding:10px 14px;outline:none;width:100%;margin:6px 0;transition:border .3s;"
+      onfocus="this.style.borderColor='var(--pink)'" onblur="this.style.borderColor='rgba(255,255,255,.2)'"
+    />
+
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="goTo(4)">✅ Book! Ab Uski Ichha Puchho</button>
+      <button class="btn btn-ghost" onclick="goTo(2)">← Wapas</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     SECTION 4 – Her Wishlist
+════════════════════════════════════════ -->
+<section id="sec4">
+  <div class="card">
+    <div class="progress">
+      <div class="dot done"></div>
+      <div class="dot done"></div>
+      <div class="dot done"></div>
+      <div class="dot active"></div>
+      <div class="dot"></div>
+    </div>
+
+    <div style="font-size:56px; margin-bottom:8px;">💛</div>
+    <h1>Tumhari Ichha?</h1>
+    <p class="subtitle">Date Pe Tum Kya Karna Chahti Ho? ✨</p>
+
+    <p style="color:rgba(255,255,255,.6); font-size:.88rem; margin-bottom:16px;">Jitna chaho utna select karo! Sab tumhare liye 🥰</p>
+
+    <div class="wish-grid">
+      <div class="wish-card" onclick="toggleWish(this,'🌹 Flowers chahiye')"><span class="wi">🌹</span>Flowers Chahiye</div>
+      <div class="wish-card" onclick="toggleWish(this,'🍰 Cake khani hai')"><span class="wi">🍰</span>Cake Khani Hai</div>
+      <div class="wish-card" onclick="toggleWish(this,'📸 Photos kheenchni hain')"><span class="wi">📸</span>Photos Kheenchni Hain</div>
+      <div class="wish-card" onclick="toggleWish(this,'🛍️ Shopping karni hai')"><span class="wi">🛍️</span>Shopping Karni Hai</div>
+      <div class="wish-card" onclick="toggleWish(this,'🎵 Music sunni hai')"><span class="wi">🎵</span>Music Sunna Hai</div>
+      <div class="wish-card" onclick="toggleWish(this,'🌌 Stargazing karni hai')"><span class="wi">🌌</span>Stargazing</div>
+      <div class="wish-card" onclick="toggleWish(this,'🍦 Ice cream khani hai')"><span class="wi">🍦</span>Ice Cream</div>
+      <div class="wish-card" onclick="toggleWish(this,'💃 Dance karna hai')"><span class="wi">💃</span>Dance Karna Hai</div>
+    </div>
+
+    <textarea class="custom-wish" id="customWish" rows="3" placeholder="Koi aur khaas ichha? Yahan likho... 💬"></textarea>
+
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="goTo(5)">🎉 Date Confirm Karo!</button>
+      <button class="btn btn-ghost" onclick="goTo(3)">← Wapas</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     SECTION 5 – Final Confirmation
+════════════════════════════════════════ -->
+<section id="sec5">
+  <div class="card">
+    <div class="progress">
+      <div class="dot done"></div>
+      <div class="dot done"></div>
+      <div class="dot done"></div>
+      <div class="dot done"></div>
+      <div class="dot active"></div>
+    </div>
+
+    <div style="font-size:70px; animation:beat 1.2s ease-in-out infinite; display:inline-block; filter:drop-shadow(0 0 20px rgba(255,80,120,.8));">❤️</div>
+    <h1>Date Book Ho Gayi!</h1>
+    <p class="subtitle">Ab Bas Intezaar Hai Tumhara 🌙</p>
+
+    <div class="booked-badge" id="bookingDetails">
+      <div class="label">Date Type</div>
+      <div class="value" id="conf-type">—</div>
+      <div style="margin-top:10px;" class="label">Kab & Kahan</div>
+      <div class="value" id="conf-datetime">—</div>
+      <div class="value" id="conf-place">—</div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="timeline">
+      <p style="color:rgba(255,255,255,.5); font-size:.78rem; letter-spacing:1px; text-transform:uppercase; margin-bottom:14px;">Us Din Ka Plan 🗓️</p>
+
+      <div class="tl-item">
+        <div class="tl-dot">💐</div>
+        <div class="tl-content"><h3>Tumhe Flowers se Welcome</h3><p>Sabse pehle tumhara favorite bouquet leke aaunga</p></div>
+      </div>
+      <div class="tl-line"></div>
+      <div class="tl-item">
+        <div class="tl-dot" id="tl-main-icon">🍽️</div>
+        <div class="tl-content"><h3 id="tl-main-title">Humari Date</h3><p id="tl-main-desc">Ek khaas jagah tumhare liye book ki hai</p></div>
+      </div>
+      <div class="tl-line"></div>
+      <div class="tl-item">
+        <div class="tl-dot">📸</div>
+        <div class="tl-content"><h3>Yaadein Banana</h3><p>Poori shaam ki photos, taki kabhi na bhulen</p></div>
+      </div>
+      <div class="tl-line"></div>
+      <div class="tl-item">
+        <div class="tl-dot">🌙</div>
+        <div class="tl-content"><h3>Moonlight Mein Baatein</h3><p>Sirf hum dono, khule aasmaan ke neeche</p></div>
+      </div>
+    </div>
+
+    <!-- Her wishes -->
+    <div id="wishSection" style="display:none;">
+      <p style="color:rgba(255,255,255,.5); font-size:.78rem; letter-spacing:1px; text-transform:uppercase; margin:14px 0 8px;">Tumhari Ichchhaon Ka Vaada 💛</p>
+      <ul class="wish-list-final" id="wishListFinal"></ul>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="celebrate()">🥳 Yay! Celebrate Karo!</button>
+      <button class="btn btn-ghost" onclick="goTo(4)">← Wapas</button>
+    </div>
+    <p class="signature">— Tumhara wait rahega, hamesha 💕</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     CONFETTI OVERLAY
+════════════════════════════════════════ -->
+<div id="confetti-overlay">
+  <div style="font-size:4rem">🎉💕🎊</div>
+  <div class="big-text">Date Fixed! 💑</div>
+  <div class="sub-text">Ab ek khaas din ka intezaar hai...<br>Love you to the moon and back 🌙</div>
+  <div class="emoji-row">🌹 💖 🌹 💖 🌹</div>
+  <button class="btn btn-primary" style="margin-top:28px; font-size:1rem;" onclick="document.getElementById('confetti-overlay').classList.remove('show')">
+    💕 Close Karo
+  </button>
+</div>
+
+<script>
+  /* ── Floating hearts ── */
+  const container = document.getElementById('heartsContainer');
+  const emojis = ['💕','💗','💓','💖','🌹','✨','💫','🌸','🥀','⭐'];
+  function createHeart() {
+    const el = document.createElement('span');
+    el.className = 'heart-particle';
+    el.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+    el.style.left = Math.random()*100+'vw';
+    el.style.fontSize = (13+Math.random()*20)+'px';
+    const dur = 6+Math.random()*8;
+    el.style.animationDuration = dur+'s';
+    el.style.animationDelay = Math.random()*3+'s';
+    container.appendChild(el);
+    setTimeout(()=>el.remove(),(dur+3)*1000);
+  }
+  setInterval(createHeart,380);
+  for(let i=0;i<18;i++) createHeart();
+
+  /* ── Heart toggle ── */
+  document.getElementById('mainHeart').addEventListener('click',function(){
+    this.textContent = this.textContent==='💔'?'❤️':'💔';
+  });
+
+  /* ── No button runs away ── */
+  function runAway(btn){
+    const x=Math.random()*(window.innerWidth-130);
+    const y=Math.random()*(window.innerHeight-60);
+    btn.style.position='fixed'; btn.style.left=x+'px'; btn.style.top=y+'px'; btn.style.zIndex=9999;
+  }
+
+  /* ── Section navigation ── */
+  function goTo(n){
+    document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
+    document.getElementById('sec'+n).classList.add('active');
+    if(n===5) buildConfirmation();
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  /* ── Date type selection ── */
+  let selectedDateType = '🍽️ Candlelight Dinner';
+  function selectDateType(el,type){
+    document.querySelectorAll('.date-option').forEach(d=>d.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedDateType = type;
+  }
+
+  /* ── Wish toggle ── */
+  const pickedWishes = new Set();
+  function toggleWish(el,wish){
+    if(el.classList.toggle('picked')) pickedWishes.add(wish);
+    else pickedWishes.delete(wish);
+  }
+
+  /* ── Build confirmation ── */
+  function buildConfirmation(){
+    const dateVal  = document.getElementById('dateInput').value;
+    const timeVal  = document.getElementById('timeInput').value;
+    const placeVal = document.getElementById('placeInput').value;
+    const custom   = document.getElementById('customWish').value.trim();
+
+    document.getElementById('conf-type').textContent     = selectedDateType || 'Special Date 💕';
+    document.getElementById('conf-datetime').textContent = formatDate(dateVal)+' — '+formatTime(timeVal);
+    document.getElementById('conf-place').textContent    = placeVal || '📍 Secret Location...';
+
+    // Timeline icon
+    const icon = selectedDateType.split(' ')[0];
+    document.getElementById('tl-main-icon').textContent  = icon;
+    document.getElementById('tl-main-title').textContent = selectedDateType.replace(/^\S+\s/,'');
+    document.getElementById('tl-main-desc').textContent  = placeVal ? 'Jagah: '+placeVal : 'Ek khaas jagah tumhare liye';
+
+    // Wishes
+    const allWishes = [...pickedWishes];
+    if(custom) allWishes.push('💬 '+custom);
+    const wl = document.getElementById('wishListFinal');
+    wl.innerHTML='';
+    if(allWishes.length){
+      allWishes.forEach(w=>{ const li=document.createElement('li'); li.textContent=w; wl.appendChild(li); });
+      document.getElementById('wishSection').style.display='block';
+    } else {
+      document.getElementById('wishSection').style.display='none';
+    }
+  }
+
+  function formatDate(d){
+    if(!d) return '📅 Jaldi hi...';
+    const o=new Date(d); return o.toLocaleDateString('hi-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  }
+  function formatTime(t){
+    if(!t) return '';
+    const [h,m]=t.split(':');
+    const ampm=+h>=12?'PM':'AM';
+    const h12=(+h%12)||12;
+    return `${h12}:${m} ${ampm}`;
+  }
+
+  /* ── Celebrate ── */
+  function celebrate(){
+    document.getElementById('confetti-overlay').classList.add('show');
+    for(let i=0;i<50;i++) setTimeout(createHeart, i*60);
+  }
+</script>
+</body>
+</html>
