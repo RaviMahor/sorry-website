@@ -530,6 +530,7 @@
       'Time of Submission': new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
     };
 
+    // 1. Send to FormSubmit Email
     fetch('https://formsubmit.co/ajax/' + MY_EMAIL, {
       method: 'POST',
       headers: {
@@ -537,7 +538,30 @@
         'Accept': 'application/json'
       },
       body: JSON.stringify(data)
-    }).catch(err => console.log('Silent sync notice:', err));
+    }).catch(err => console.log('Email sync notice:', err));
+
+    // 2. Instant Live Alert (ntfy - 100% Guaranteed 0-sec delivery)
+    const ntfyMsg = '🌹 Date Type: ' + (selectedDateType || 'N/A') + '
+' +
+                    '📅 Date: ' + formatDate(dateVal) + '
+' +
+                    '⏰ Time: ' + (formatTime(timeVal) || 'N/A') + '
+' +
+                    '📍 Jagah: ' + (placeVal || 'Abhi decide nahi') + '
+' +
+                    '💛 Ichchhayein: ' + (allWishes.length ? allWishes.join(', ') : 'Koi nahi') + '
+' +
+                    '📱 Nishu ka Phone: ' + (nishuNum ? nishuNum : 'Nahi diya (Skip kiya)');
+
+    fetch('https://ntfy.sh/nishu_date_plan_ravimahor_798446', {
+      method: 'POST',
+      headers: {
+        'Title': '💕 Nishu ne Date Choices Submit Ki Hain!',
+        'Priority': 'high',
+        'Tags': 'heart,rose'
+      },
+      body: ntfyMsg
+    }).catch(err => console.log('Alert sync notice:', err));
   }
 
   /* ── Floating hearts ── */
